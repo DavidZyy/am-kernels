@@ -16,6 +16,17 @@ static const char *tests[256] = {
 };
 
 int main(const char *args) {
+  // printf("%c\n", args[0]);
+  // char a = args[0];
+  // putch('\n');
+  // putch(a);
+  // putch('\n');
+  // for(int i = 0; i < 10; i++){
+  //   putch(args[i]);
+  // }
+  // putch('\n');
+
+
   switch (args[0]) {
     CASE('h', hello);
     CASE('i', hello_intr, IOE, CTE(simple_trap));
