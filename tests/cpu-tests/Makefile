@@ -29,7 +29,8 @@ $(ALL): %: Makefile.%
 # remove Makefile!!!
 # Make will set the special variable MAKECMDGOALS to the list of goals you specified
 # on the command line.
-Makefile.%: tests/%.c latest
+
+Makefile.%: tests/%.c latest 
 # @echo $<
 	@/bin/echo -e "NAME = $*\nSRCS = $<\nLIBS += klib\ninclude $${AM_HOME}/Makefile" > $@
 	@if make -s -f $@ ARCH=$(ARCH) $(MAKECMDGOALS); then \
@@ -39,6 +40,18 @@ Makefile.%: tests/%.c latest
 	fi
 # '-' means ignoring the fault if it happens and continuning executing.
 	-@rm -f Makefile.$*
+
+Makefile.%: tests/%.S latest 
+# @echo $<
+	@/bin/echo -e "NAME = $*\nSRCS = $<\nLIBS += klib\ninclude $${AM_HOME}/Makefile" > $@
+	@if make -s -f $@ ARCH=$(ARCH) $(MAKECMDGOALS); then \
+		printf "[%14s] $(COLOR_GREEN)PASS!$(COLOR_NONE)\n" $* >> $(RESULT); \
+	else \
+		printf "[%14s] $(COLOR_RED)FAIL!$(COLOR_NONE)\n" $* >> $(RESULT); \
+	fi
+# '-' means ignoring the fault if it happens and continuning executing.
+	-@rm -f Makefile.$*
+
 
 run: all
 	@cat $(RESULT)
