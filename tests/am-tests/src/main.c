@@ -15,17 +15,21 @@ static const char *tests[256] = {
   ['p'] = "x86 virtual memory test",
 };
 
+/* mainargs is defined in abstract-machine in am
+  when mainargs is changed, we should go to there
+  and make clean. */
 int main(const char *args) {
-  // printf("%c\n", args[0]);
-  // char a = args[0];
-  // putch('\n');
-  // putch(a);
-  // putch('\n');
-  // for(int i = 0; i < 10; i++){
-  //   putch(args[i]);
-  // }
-  // putch('\n');
-
+//   printf("%c\n", args[0]);
+//   printf("%s\n", args[0]);
+  char a = args[0];
+  putch('\n');
+  putch(a);
+//   putch('\n');
+//   for(int i = 0; i < 10; i++){
+//     putch(args[i]);
+//   }
+//   putch('\n');
+//   printf("%s\n", args[0]);
 
   switch (args[0]) {
     CASE('h', hello);
@@ -46,5 +50,11 @@ int main(const char *args) {
         }
       }
   }
+
+  // void rtc_test();
+  // void keyboard_test();
+  // ioe_init();
+  // keyboard_test();
+  // rtc_test();
   return 0;
 }

@@ -30,7 +30,7 @@ $(ALL): %: Makefile.%
 # Make will set the special variable MAKECMDGOALS to the list of goals you specified
 # on the command line.
 
-Makefile.%: tests/%.c latest 
+Makefile.%: tests/%.c latest
 # @echo $<
 	@/bin/echo -e "NAME = $*\nSRCS = $<\nLIBS += klib\ninclude $${AM_HOME}/Makefile" > $@
 	@if make -s -f $@ ARCH=$(ARCH) $(MAKECMDGOALS); then \
@@ -41,7 +41,7 @@ Makefile.%: tests/%.c latest
 # '-' means ignoring the fault if it happens and continuning executing.
 	-@rm -f Makefile.$*
 
-Makefile.%: tests/%.S latest 
+Makefile.%: tests/%.S latest
 # @echo $<
 	@/bin/echo -e "NAME = $*\nSRCS = $<\nLIBS += klib\ninclude $${AM_HOME}/Makefile" > $@
 	@if make -s -f $@ ARCH=$(ARCH) $(MAKECMDGOALS); then \

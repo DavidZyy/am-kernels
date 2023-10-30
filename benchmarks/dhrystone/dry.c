@@ -354,11 +354,26 @@
 #include <klib.h>
 #include <klib-macros.h>
 
-static uint32_t uptime_ms() { return io_read(AM_TIMER_UPTIME).us / 1000; }
+/* printf consume a lot of time on nemu */
+static uint32_t uptime_ms() { 
+  // uint64_t us = io_read(AM_TIMER_UPTIME).us;
+  // uint64_t us = io_read(AM_TIMER_UPTIME).us;
+  // printf("us is: %d\n", io_read(AM_TIMER_UPTIME).us);
+  // printf("us is: %d\n", io_read(AM_TIMER_UPTIME).us);
+  // printf("1 us is: %d\n", io_read(AM_TIMER_UPTIME).us);
+  // printf("2 us is: %d\n", io_read(AM_TIMER_UPTIME).us);
+  // printf("3 us is: %d\n", io_read(AM_TIMER_UPTIME).us);
+  // printf("4 us is: %d\n", io_read(AM_TIMER_UPTIME).us);
+  // printf("hh\n");
+  return io_read(AM_TIMER_UPTIME).us / 1000; 
+  // return io_read(AM_TIMER_UPTIME).us; 
+  // printf("us is: %ld\n", us);
+  // return us / 1000; 
+  }
 #define Start_Timer() Begin_Time = uptime_ms()
 #define Stop_Timer()  End_Time   = uptime_ms()
 
-#define NUMBER_OF_RUNS		500000 /* Default number of runs */
+#define NUMBER_OF_RUNS		50000 /* Default number of runs */
 #define PASS2
 
 #ifdef  NOSTRUCTASSIGN
@@ -795,6 +810,7 @@ int main ()
     /***************/
 
     Start_Timer();
+    printf("Begin_Time: %ld\n", Begin_Time);
 
     for (Run_Index = 1; Run_Index <= Number_Of_Runs; ++Run_Index)
     {
@@ -847,6 +863,7 @@ int main ()
     /**************/
 
     Stop_Timer();
+    printf("End_Time: %ld\n", End_Time);
 
     User_Time = End_Time - Begin_Time;
 

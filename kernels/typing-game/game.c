@@ -158,6 +158,7 @@ int main() {
       game_logic_update(current);
     }
 
+    /* use polling method to read keyboard? */
     while (1) {
       AM_INPUT_KEYBRD_T ev = io_read(AM_INPUT_KEYBRD);
       if (ev.keycode == AM_KEY_NONE) break;

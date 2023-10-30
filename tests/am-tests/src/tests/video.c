@@ -16,6 +16,7 @@ static int used[N][N];
 static uint32_t color_buf[32 * 32];
 
 void redraw() {
+  /* separate the whole screeen to 32 * 32 grid */
   int w = io_read(AM_GPU_CONFIG).width / N;
   int h = io_read(AM_GPU_CONFIG).height / N;
   int block_size = w * h;
@@ -73,6 +74,7 @@ void video_test() {
   int fps = 0;
 
   while (1) {
+    /* equals to call __am_timer_uptime() function */
     unsigned long upt = io_read(AM_TIMER_UPTIME).us / 1000;
     if (upt - last > 1000 / FPS) {
       update();
