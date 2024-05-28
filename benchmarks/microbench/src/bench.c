@@ -1,5 +1,6 @@
 #include <am.h>
 #include <benchmark.h>
+#include <stdio.h>
 #include <limits.h>
 #include <klib-macros.h>
 
@@ -158,6 +159,11 @@ void* bench_alloc(size_t size) {
   size  = (size_t)ROUNDUP(size, 8);
   char *old = hbrk;
   hbrk += size;
+  // if (!((uintptr_t)heap.start <= (uintptr_t)hbrk && (uintptr_t)hbrk < (uintptr_t)heap.end)) {
+  //   printf("heap start: %x\n", heap.start);
+  //   printf("hbrk: %x\n", hbrk);
+  //   printf("heap end: %x\n", heap.end);
+  // }
   assert((uintptr_t)heap.start <= (uintptr_t)hbrk && (uintptr_t)hbrk < (uintptr_t)heap.end);
   for (uint64_t *p = (uint64_t *)old; p != (uint64_t *)hbrk; p ++) {
     *p = 0;

@@ -1,70 +1,76 @@
+# Test Store and Load Instructions
 .section .data
+array:
     .align 4
-value1:
-    .word 0x12345678   # Value to be stored and loaded
-
-value2:
-    .word 0xdeadbeef   # Another value for testing
-
-value3:
-    .word 0xcafebabe   # Yet another value
-
-.section .bss
-    .align 4
-
-buffer:
-    .space 16          # Allocate space for data
+    .word 0x11111111, 0x22222222, 0x33333333 # global variable, should be put into ram.
+    # .word 0x00000000, 0x00000000, 0x00000000 # global variable, should be put into ram.
+string1:
+    .string "Test Passed!\n"
+string2:
+    .string "Test Failed!\n"
 
 .section .text
-.globl _start
+# .globl _start
+.globl main
 
-_start:
-    # Initialize data addresses
-    la a0, value1       # Load the address of 'value1' into a0
-    la a1, value2       # Load the address of 'value2' into a1
-    la a2, value3       # Load the address of 'value3' into a2
-    la a3, buffer       # Load the address of 'buffer' into a3
 
-    # Store data using different instructions and addressing modes
-    li a4, 0xabcdefab   # Value to store
-    sw a4, 0(a0)        # Store a word (32 bits) to the address pointed by a0
-    sh a4, 4(a1)        # Store a half-word (16 bits) to the address pointed by a1 + 4
-    sb a4, 8(a2)        # Store a byte (8 bits) to the address pointed by a2 + 8
 
-    # Load data using different instructions and addressing modes
-    lw a5, 0(a0)        # Load a word (32 bits) from the address pointed by a0 to a5
+# _start:
+main:
+    la a1, array        # Load base address of data section to a1
 
-    # Compare loaded data with stored data
-    beq a4, a5, _pass_word
-    j _fail_word
+    # Store data
+    li a2, 0xaabbccdd   # word stored in machine from low to high addr is 0xaa, 0xbb, 0xcc, 0xdd 
+    sb a2, 0(a1)        # Store a byte (8 bits) of data to address a1
+    li a2, 0xbbccddee
+    sh a2, 4(a1)        # Store a half-word (16 bits) of data to address a1 + 2
+    li a2, 0xccddeeff
+    sw a2, 8(a1)        # Store a word (32 bits) of data to address a1 + 4
 
-_pass_word:
-    # Check half-word load
-    j _fail_halfword
+    # Load data
+    lbu a3, 0(a1)
+    li  a2, 0xdd
+    bne a3, a2, fail_exit # Check byte load
 
-_pass_halfword:
-    # Check byte load
-    j _fail_byte
+    lhu a3, 4(a1)
+    li  a2, 0xddee
+    bne a3, a2, fail_exit # Check half-word load
 
-_pass_byte:
-    # Test passed
-    li a0, 0
-    j _exit
+    lw  a3, 0(a1)
+    li  a2, 0x111111dd
+    # li  a2, 0x000000dd
+    bne a3, a2, fail_exit # Check byte load
 
-_fail_word:
-    # Test failed for word load
-    li a0, 1
-    j _exit
+    lw  a3, 4(a1)
+    li  a2, 0x2222ddee
+    # li  a2, 0x0000ddee
+    bne a3, a2, fail_exit # Check half-word load
 
-_fail_halfword:
-    # Test failed for half-word load
-    li a0, 2
-    j _exit
+    lw  a3, 8(a1)
+    li  a2, 0xccddeeff
+    bne a3, a2, fail_exit # Check word load
 
-_fail_byte:
-    # Test failed for byte load
-    li a0, 3
+    # output pass information
+    la  a1, string1
+    jal output_info    # output information
 
-_exit:
-    # Exit
     ebreak
+
+fail_exit:
+    la  a1, string2
+    jal output_info    # output information
+
+    ebreak
+
+output_info:
+    # li a2, 0xa00003f8 # serial address
+    li a2, 0x10000000 # serial address
+    li a3, 13         # the length of string
+loop:
+    lbu  a4, 0(a1)
+    sb   a4, 0(a2)
+    addi a1, a1, 1
+    addi a3, a3, -1
+    bnez a3, loop
+
+    ret
