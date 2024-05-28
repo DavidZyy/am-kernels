@@ -12,6 +12,8 @@ ALL = $(basename $(notdir $(shell find tests/. -name "*.c")))
 # add to understand
 # use "make run", print all (*.c) file under tests, use "make ALL=xxx run" will just print xxx
 # $(error $(ALL))
+all: $(addprefix Makefile., $(ALL))
+	@echo "test list [$(words $(ALL)) item(s)]:" $(ALL)
 
 # because all is depend on the Makefile.$(ALL),so the @echo "" $(ALL) is run behand the 
 # commands under ther Makefile.$(ALL)
@@ -35,9 +37,9 @@ Makefile.%: tests/%.c latest
 # @/bin/echo -e "NAME = $*\nSRCS = $<\nLIBS += klib\ninclude $${AM_HOME}/Makefile" > $@
 	@/bin/echo -e "NAME = $*\nSRCS = $<\ninclude $${AM_HOME}/Makefile" > $@
 	@if make -s -f $@ ARCH=$(ARCH) $(MAKECMDGOALS); then \
-		printf "[%14s] $(COLOR_GREEN)PASS!$(COLOR_NONE)\n" $* >> $(RESULT); \
+		printf "[%14s] $(COLOR_GREEN)PASS$(COLOR_NONE)\n" $* >> $(RESULT); \
 	else \
-		printf "[%14s] $(COLOR_RED)FAIL!$(COLOR_NONE)\n" $* >> $(RESULT); \
+		printf "[%14s] $(COLOR_RED)***FAIL***$(COLOR_NONE)\n" $* >> $(RESULT); \
 	fi
 # '-' means ignoring the fault if it happens and continuning executing.
 	-@rm -f Makefile.$*
